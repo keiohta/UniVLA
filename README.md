@@ -18,7 +18,7 @@ A general-purpose **VLA Model** designed to unify **vision, language, and action
 
 ## 🔧 REPO TODO List
 - [x] Policy learning for CALVIN, LIBERO, and SimplerEnv.
-- [x] World model pretraining for video generation.
+- [ ] World model pretraining for video generation.
 - [ ] Support for evaluation.
 - [ ] Support for real-robot ALOHA.
 - [ ] Support for autonomous driving.
