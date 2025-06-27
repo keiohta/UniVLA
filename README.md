@@ -7,7 +7,7 @@ A general-purpose **VLA Model** designed to unify **vision, language, and action
 > 📜 [[technical report](https://arxiv.org/abs/2506.19850)] 🤗 [[model weights](https://huggingface.co/Yuqi1997/UniVLA)] 🤖 [[project page](https://robertwyq.github.io/univla.github.io)]
 
 ## 🚀 News
-- **2025.6.25**: The code is still being organized.
+- **2025.6.27**: code released for robotic simulations.
 - **2025.6.25**: paper released on the arXiv.
 
 ## 🧪 Highlights
@@ -18,13 +18,20 @@ A general-purpose **VLA Model** designed to unify **vision, language, and action
 
 ## 🔧 REPO TODO List
 - [x] Policy learning for CALVIN, LIBERO, and SimplerEnv.
+- [x] Support for evaluation.
 - [ ] World model pretraining for video generation.
-- [ ] Support for evaluation.
 - [ ] Support for real-robot ALOHA.
 - [ ] Support for autonomous driving.
 - [ ] Support for general grounding.
 
 ## 📚 Experiments
+
+### Emu3 Pretraining Models
+You can download the pretraining models from HuggingFace, here we provide the links.
+
+> [Emu3-base](https://huggingface.co/BAAI/Emu3-Stage1)
+
+> [Emu3-vision](https://huggingface.co/BAAI/Emu3-VisionTokenizer)
 
 ### World Model Training
 ```shell

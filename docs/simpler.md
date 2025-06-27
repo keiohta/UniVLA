@@ -57,7 +57,7 @@ bash scripts/simulator/simplerenv/train_simplerenv_bridge_video.sh
 ```shell
 cd reference/RoboVLMs
 
-sh eval/simplerenv/bridge_univla.bash ${CKPT_PATH}
+bash scripts/bridge_univla.bash ${CKPT_PATH}
 
 # get results, modify the results path
 python eval/simplerenv/get_results.py

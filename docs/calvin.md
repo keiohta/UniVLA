@@ -54,7 +54,7 @@ bash scripts/simulator/calvin/train_calvin_abcd_video.sh
 cd reference/RoboVLMs
 
 # 8 GPUs inference
-bash scripts/run_eval_raw_ddp_torchrun_emu.sh ${CKPT_PATH} 
+bash scripts/run_eval_calvin_univla.sh ${CKPT_PATH} 
 
 # above command will generate the 8 results (if use 8 GPUs) in the `results` folder, calculate the final average score
 python tools/evaluation/calvin_score.py

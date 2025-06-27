@@ -42,5 +42,5 @@ bash scripts/simulator/libero/train_libero_video.sh
 cd reference/RoboVLMs
 
 # 1 GPU inference, modify the {task_suite_name} for different tasks
-bash scripts/run_eval_libero_emu.sh ${CKPT_PATH} 
+bash scripts/run_eval_libero_univla.sh ${CKPT_PATH} 
 ```
