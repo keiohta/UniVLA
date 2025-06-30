@@ -34,6 +34,7 @@ You can download the pretraining models from HuggingFace, here we provide the li
 > [Emu3-vision](https://huggingface.co/BAAI/Emu3-VisionTokenizer)
 
 ### World Model Training
+More details can be found in the [World Model Training](docs/world_model.md) document.
 ```shell
 # train the world model
 bash scripts/pretrain/train_video_1node.sh
@@ -109,3 +110,14 @@ Our work is built upon the following projects, Thanks for their great open-sourc
 - [Emu3](https://github.com/baaivision/Emu3)
 - [RoboVLMs](https://github.com/Robot-VLAs/RoboVLMs)
 - [OpenVLA](https://github.com/openvla/openvla)
+
+## 🌟Citation
+If you find this project useful, please consider citing our work:
+```bibtex
+@article{wang2025unified,
+  title={Unified Vision-Language-Action Model},
+  author={Wang, Yuqi and Li, Xinghang and Wang, Wenxuan and Zhang, Junbo and Li, Yingyan and Chen, Yuntao and Wang, Xinlong and Zhang, Zhaoxiang},
+  journal={arXiv preprint arXiv:2506.19850},
+  year={2025}
+}
+```
