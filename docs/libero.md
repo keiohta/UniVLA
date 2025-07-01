@@ -24,7 +24,7 @@ python tools/process/libero_process.py
 bash scripts/tokenizer/extract_vq_emu3.sh 
 
 # 3. pickle generation for training
-python scripts/normalize_libero.py \
+python tools/pickle_gen/pickle_generation_libero.py\
   --dataset_path ./datasets/processed_data \
   --output_path ./datasets/processed_data/meta \
   --normalizer_path ./configs/normalizer_libero \
