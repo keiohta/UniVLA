@@ -9,3 +9,13 @@ cd tools/process/post_train
 python oxe_toto.py
 ```
 
+## World Model Training
+```shell
+# train the world model
+bash scripts/pretrain/train_video_1node.sh
+```
+
+## Inference example
+```shell
+python models/inference/inference_vision.py
+```

@@ -63,7 +63,7 @@ class Emu3SFTDataset(Dataset):
         self.video_format = args.video_format
 
         if self.raw_image:
-            self.vision_hub = "/share/project/yuqi.wang/OmniSim/pretrain/Emu3-VisionVQ"
+            self.vision_hub = "/share/project/yuqi.wang/UniVLA/pretrain/Emu3-VisionVQ"
             self.image_processor = AutoImageProcessor.from_pretrained(self.vision_hub, trust_remote_code=True)
             self.image_tokenizer = AutoModel.from_pretrained(self.vision_hub, trust_remote_code=True)
             self.image_processor.min_pixels = 80 * 80

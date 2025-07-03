@@ -19,8 +19,8 @@ A general-purpose **VLA Model** designed to unify **vision, language, and action
 ## 🔧 REPO TODO List
 - [x] Policy learning for CALVIN, LIBERO, and SimplerEnv.
 - [x] Support for evaluation.
-- [ ] World model pretraining for video generation.
-- [ ] Support for real-robot ALOHA.
+- [x] World model pretraining for video generation.
+- [x] Example for real-robot ALOHA.
 - [ ] Support for autonomous driving.
 - [ ] Support for general grounding.
 
@@ -86,6 +86,7 @@ pip install -r requirements.txt
 - [CALVIN](docs/calvin.md)
 - [LIBERO](docs/libero.md)
 - [SimplerEnv](docs/simplerenv.md)
+- [ALOHA](docs/aloha.md)
 
 <section class="section">
   <div class="container is-max-desktop">
