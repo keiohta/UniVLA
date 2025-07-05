@@ -12,6 +12,7 @@ import argparse
 from PIL import Image, ImageEnhance
 import random
 
+
 def random_shift(images, max_shift=0.1):
     """
     对一个图像列表进行随机平移
@@ -22,7 +23,7 @@ def random_shift(images, max_shift=0.1):
     width, height = images[0].size
     shift_x = random.uniform(-max_shift, max_shift) * width
     shift_y = random.uniform(-max_shift, max_shift) * height
-    
+
     # 对每一帧图像应用相同的平移
     shifted_images = [
         image.transform(
@@ -32,8 +33,9 @@ def random_shift(images, max_shift=0.1):
             resample=Image.BICUBIC
         ) for image in images
     ]
-    
+
     return shifted_images
+
 
 def random_color_enhance(images):
     """
@@ -42,12 +44,13 @@ def random_color_enhance(images):
     :return: 颜色增强后的图像列表
     """
     factor = random.uniform(0.5, 1.5)  # 随机调整颜色的增强因子
-    
+
     color_enhanced_images = [
         ImageEnhance.Color(image).enhance(factor) for image in images
     ]
-    
+
     return color_enhanced_images
+
 
 def random_brightness_enhance(images):
     """
@@ -56,25 +59,28 @@ def random_brightness_enhance(images):
     :return: 亮度增强后的图像列表
     """
     factor = random.uniform(0.5, 1.5)  # 随机调整亮度的增强因子
-    
+
     brightness_enhanced_images = [
         ImageEnhance.Brightness(image).enhance(factor) for image in images
     ]
-    
+
     return brightness_enhanced_images
+
 
 def load_images(folder_path, size, interval=2, augmentation=None):
     """Load and resize all images in the specified folder."""
-    image_paths = sorted(os.listdir(folder_path),key=natural_sort_key)[::interval]
+    image_paths = sorted(os.listdir(folder_path), key=natural_sort_key)[::interval]
     images = [Image.open(osp.join(folder_path, img)).resize(size) for img in image_paths]
 
     if augmentation is not None:
         images = augmentation(images)
 
-    return images,image_paths
+    return images, image_paths
+
 
 def natural_sort_key(s):
     return [int(text) if text.isdigit() else text.lower() for text in re.split('(\d+)', s)]
+
 
 def load_images_from_json(json_path, video_root, size):
     """Load and resize images based on JSON paths."""
@@ -83,6 +89,7 @@ def load_images_from_json(json_path, video_root, size):
     images = [Image.open(osp.join(video_root, v)).resize(size) for v in image_paths]
     image_names = [osp.basename(v).split('.')[0] for v in image_paths]
     return images, image_names
+
 
 def clip_level_enc_dec(images, model, processor, save_codes_path, save_recon_path, t=4):
     """Process images in batches and save codes and reconstructed images."""
@@ -94,7 +101,7 @@ def clip_level_enc_dec(images, model, processor, save_codes_path, save_recon_pat
     os.makedirs(save_recon_path, exist_ok=True)
 
     for batch in range(num_batches):
-        image = images_tensor[:, batch * t : (batch + 1) * t]
+        image = images_tensor[:, batch * t: (batch + 1) * t]
         with torch.no_grad():
             codes = model.encode(image)
             x = codes.detach().cpu().numpy()
@@ -104,6 +111,7 @@ def clip_level_enc_dec(images, model, processor, save_codes_path, save_recon_pat
         recon_images = processor.postprocess(recon)["pixel_values"]
         for idx, im in enumerate(recon_images):
             im.save(f"{save_recon_path}/{batch * t + idx:03d}.jpg")
+
 
 def image_level_enc_dec(images, model, processor, save_codes_path, save_recon_path, batch_size=1):
     """Process images in batches: encode, decode, and save the reconstructed images and codes."""
@@ -121,7 +129,7 @@ def image_level_enc_dec(images, model, processor, save_codes_path, save_recon_pa
                 recon = model.decode(codes)
                 # Save the encoded codes
                 np.save(f'{save_codes_path}/{start_idx:03d}.npy', codes.detach().cpu().numpy())
-            
+
             # recon = recon.view(-1, *recon.shape[2:])
             # recon_images = processor.postprocess(recon)["pixel_values"]
             # for idx, im in enumerate(recon_images):
@@ -155,6 +163,9 @@ def image_level_enc(images, image_paths, model, processor, save_codes_path, batc
         except Exception as e:
             print(f"Error processing batch starting at image {start_idx}: {e}")
 
+
+data_dir_processed = "/media/ota/A292603492600F5B/data/airoa/processed_data"
+
 data_config = {
     'DROID': {
         'view': 'wrist_image_left',
@@ -163,8 +174,10 @@ data_config = {
         'SIZE': (256, 144),
         'hz_func': lambda interval: 15 // interval,
         'VIDEO_ROOT': lambda view: f'/share/project/yuqi.wang/datasets/processed_data/droid_fast/{view}',
-        'VIDEO_CODES_SAVE': lambda view, hz: f'/share/project/yuqi.wang/datasets/post_train_data/droid/{view}_codes_256_{hz}hz',
-        'VIDEO_RECON_SAVE': lambda view, hz: f'/share/project/yuqi.wang/datasets/post_train_data/droid/{view}_recon_256_{hz}hz'
+        'VIDEO_CODES_SAVE': lambda view,
+                                   hz: f'/share/project/yuqi.wang/datasets/post_train_data/droid/{view}_codes_256_{hz}hz',
+        'VIDEO_RECON_SAVE': lambda view,
+                                   hz: f'/share/project/yuqi.wang/datasets/post_train_data/droid/{view}_recon_256_{hz}hz'
     },
     'RT1': {
         'min_pixels': 128 * 128,
@@ -173,8 +186,10 @@ data_config = {
         'SIZE': (240, 192),
         'hz_func': lambda interval: 3 // interval,
         'VIDEO_ROOT': '/share/project/yuqi.wang/datasets/processed_data/rt1',
-        'VIDEO_CODES_SAVE': lambda size, hz: f'/share/project/yuqi.wang/datasets/post_train_data/rt1_codes_{size[0]}_{hz}hz',
-        'VIDEO_RECON_SAVE': lambda size, hz: f'/share/project/yuqi.wang/datasets/post_train_data/rt1_recon_{size[0]}_{hz}hz'
+        'VIDEO_CODES_SAVE': lambda size,
+                                   hz: f'/share/project/yuqi.wang/datasets/post_train_data/rt1_codes_{size[0]}_{hz}hz',
+        'VIDEO_RECON_SAVE': lambda size,
+                                   hz: f'/share/project/yuqi.wang/datasets/post_train_data/rt1_recon_{size[0]}_{hz}hz'
     },
     '1X': {
         'min_pixels': 128 * 128,
@@ -190,8 +205,10 @@ data_config = {
         'SIZE': (240, 180),
         'hz_func': lambda interval: 5 // interval,
         'VIDEO_ROOT': '/share/project/yuqi.wang/datasets/processed_data/bridgev2',
-        'VIDEO_CODES_SAVE': lambda size, hz: f'/share/project/yuqi.wang/datasets/post_train_data/bridgev2_codes_{size[0]}_{hz}hz',
-        'VIDEO_RECON_SAVE': lambda size, hz: f'/share/project/yuqi.wang/datasets/post_train_data/bridgev2_codes_{size[0]}_{hz}hz'
+        'VIDEO_CODES_SAVE': lambda size,
+                                   hz: f'/share/project/yuqi.wang/datasets/post_train_data/bridgev2_codes_{size[0]}_{hz}hz',
+        'VIDEO_RECON_SAVE': lambda size,
+                                   hz: f'/share/project/yuqi.wang/datasets/post_train_data/bridgev2_codes_{size[0]}_{hz}hz'
     },
     'Calvin': {
         'min_pixels': 80 * 80,
@@ -205,7 +222,7 @@ data_config = {
         'min_pixels': 80 * 80,
         'interval': 1,
         # 'SIZE': (80, 80),
-        'SIZE': (200,200),
+        'SIZE': (200, 200),
         'VIDEO_ROOT': '/share/project/yuqi.wang/datasets/processed_data/calvin_partial',
         'VIDEO_CODES_SAVE': '/share/project/yuqi.wang/datasets/processed_data/calvin_partial_codes',
         'VIDEO_RECON_SAVE': '/share/project/yuqi.wang/datasets/processed_data/calvin_partial_recon'
@@ -230,9 +247,9 @@ data_config = {
         'min_pixels': 128 * 128,
         'interval': 1,
         'SIZE': (200, 200),
-        'VIDEO_ROOT': '/share/project/yuqi.wang/datasets/processed_data/libero_all',
-        'VIDEO_CODES_SAVE': '/share/project/yuqi.wang/datasets/processed_data/libero_all_gripper_codes_200_augshift',
-        'VIDEO_RECON_SAVE': '/share/project/yuqi.wang/datasets/processed_data/libero_recon_256'
+        'VIDEO_ROOT': f'{data_dir_processed}/libero_all',
+        'VIDEO_CODES_SAVE': f'{data_dir_processed}/libero_all_gripper_codes_200_augshift',
+        'VIDEO_RECON_SAVE': f'{data_dir_processed}/libero_recon_256'
     },
     'bridge_orig': {
         'min_pixels': 128 * 128,
@@ -290,7 +307,7 @@ data_config = {
         'VIDEO_CODES_SAVE': '/share/project/yuqi.wang/datasets/post_train_data/berkeley_autolab_ur5_codes_256',
         'VIDEO_RECON_SAVE': '/share/project/yuqi.wang/datasets/post_train_data/berkeley_autolab_ur5_recon_256'
     },
-    'viola':{
+    'viola': {
         'min_pixels': 128 * 128,
         'interval': 1,
         'SIZE': (256, 256),
@@ -298,7 +315,7 @@ data_config = {
         'VIDEO_CODES_SAVE': '/share/project/yuqi.wang/datasets/post_train_data/viola_codes_256',
         'VIDEO_RECON_SAVE': '/share/project/yuqi.wang/datasets/post_train_data/viola_recon_256'
     },
-    'cmu_play_fusion':{
+    'cmu_play_fusion': {
         'min_pixels': 128 * 128,
         'interval': 1,
         'SIZE': (256, 256),
@@ -306,15 +323,15 @@ data_config = {
         'VIDEO_CODES_SAVE': '/share/project/yuqi.wang/datasets/post_train_data/cmu_play_fusion_codes_256',
         'VIDEO_RECON_SAVE': '/share/project/yuqi.wang/datasets/post_train_data/cmu_play_fusion_recon_256'
     },
-    'utaustin_mutex':{
+    'utaustin_mutex': {
         'min_pixels': 128 * 128,
         'interval': 1,
         'SIZE': (256, 256),
         'VIDEO_ROOT': '/share/project/yuqi.wang/datasets/processed_data/oxembodiment/utaustin_mutex',
         'VIDEO_CODES_SAVE': '/share/project/yuqi.wang/datasets/post_train_data/utaustin_mutex_codes_256',
         'VIDEO_RECON_SAVE': '/share/project/yuqi.wang/datasets/post_train_data/utaustin_mutex_recon_256'
-    },    
-    'SSv2':{
+    },
+    'SSv2': {
         'min_pixels': 128 * 128,
         'interval': 1,
         'SIZE': (256, 256),
@@ -322,7 +339,7 @@ data_config = {
         'VIDEO_CODES_SAVE': '/share/project/yuqi.wang/datasets/post_train_data/SSv2_codes_256',
         'VIDEO_RECON_SAVE': '/share/project/yuqi.wang/datasets/post_train_data/SSv2_recon_256'
     },
-    'aloha_songling':{
+    'aloha_songling': {
         'min_pixels': 128 * 128,
         'interval': 1,
         'SIZE': (128, 128),
@@ -331,6 +348,7 @@ data_config = {
         'VIDEO_RECON_SAVE': '/share/project/yuqi.wang/datasets/sft_data/aloha_songling_recon_128'
     },
 }
+
 
 def get_data_config(process_data):
     cfg = data_config[process_data]
@@ -373,34 +391,39 @@ def get_data_config(process_data):
         'VIDEO_RECON_SAVE': video_recon_save
     }
 
+
 if __name__ == "__main__":
 
     MODEL_HUB = "BAAI/Emu3-VisionTokenizer"
     path = "/share/project/yuqi.wang/UniVLA/pretrain/Emu3-VisionVQ"
 
     # choose the dataset to process
-    process_data = 'Calvin'
+    process_data = 'libero'
 
     # current supported datasets
     simulator_list = ["Calvin", "Calvin_partial", "libero", 'libero_long', 'maniskill']
-    oxe_list = ['RT1', 'DROID', 'BridgeV2', 'bridge_orig', 'fmb', 'toto', 'taco_play','kuka',\
-                'berkeley_autolab_ur5','viola', 'cmu_play_fusion', 'utaustin_mutex']
+    oxe_list = ['RT1', 'DROID', 'BridgeV2', 'bridge_orig', 'fmb', 'toto', 'taco_play', 'kuka', \
+                'berkeley_autolab_ur5', 'viola', 'cmu_play_fusion', 'utaustin_mutex']
     aloha_list = ['aloha_songling']
     video_list = ['1X', 'Ego5m', 'SSv2']
 
     assert process_data in simulator_list + oxe_list + video_list + aloha_list, f"Invalid process_data: {process_data}"
 
-    model = AutoModel.from_pretrained(path, trust_remote_code=True).eval().cuda()
+    try:
+        model = AutoModel.from_pretrained(path, trust_remote_code=True).eval().cuda()
+    except OSError as e:
+        print(str(e))
+        model = None
     processor = AutoImageProcessor.from_pretrained(MODEL_HUB, trust_remote_code=True)
-    
+
     # Retrieve configuration for the selected dataset
     config = get_data_config(process_data)
 
     # Assign configuration values to variables used in your pipeline
     processor.min_pixels = config['min_pixels']  # Minimum valid pixel count
-    interval = config['interval']                # Frame interval (e.g., sampling rate)
-    SIZE = config['SIZE']                        # Desired image resolution (width, height)
-    hz = config['hz']                            # Final video frequency (Hz)
+    interval = config['interval']  # Frame interval (e.g., sampling rate)
+    SIZE = config['SIZE']  # Desired image resolution (width, height)
+    hz = config['hz']  # Final video frequency (Hz)
 
     # Paths for loading raw video, saving codes, and reconstructed videos
     VIDEO_ROOT = config['VIDEO_ROOT']
@@ -417,29 +440,31 @@ if __name__ == "__main__":
     videos = sorted(os.listdir(VIDEO_ROOT))[rank::8]
     # videos = sorted(os.listdir(VIDEO_ROOT))[rank::4]
 
-    single_view_datasets = ['RT1', 'BridgeV2', 'Ego5m', 'maniskill', 'fmb', 'toto',\
-         'kuka', 'viola', 'utaustin_mutex', 'cmu_play_fusion', 'SSv2']
-    multi_view_datasets = ['taco_play','aloha','bridge_orig', 'berkeley_autolab_ur5', 'aloha_pour','aloha_songling',\
-         'aloha_8task', 'aloha_fold']
-    
+    single_view_datasets = ['RT1', 'BridgeV2', 'Ego5m', 'maniskill', 'fmb', 'toto', \
+                            'kuka', 'viola', 'utaustin_mutex', 'cmu_play_fusion', 'SSv2']
+    multi_view_datasets = ['taco_play', 'aloha', 'bridge_orig', 'berkeley_autolab_ur5', 'aloha_pour', 'aloha_songling', \
+                           'aloha_8task', 'aloha_fold']
+
     for video in tqdm(videos, desc="Processing videos"):
         print("processing videos: ", video)
         # RT1
         if process_data in single_view_datasets:
-            images, image_paths = load_images(osp.join(VIDEO_ROOT, video,'images'), SIZE, interval)
+            images, image_paths = load_images(osp.join(VIDEO_ROOT, video, 'images'), SIZE, interval)
         elif process_data == 'DROID' or process_data == '1X':
             images, image_paths = load_images(osp.join(VIDEO_ROOT, video), SIZE, interval)
         elif process_data == 'Calvin':
             # images, image_paths = load_images(osp.join(VIDEO_ROOT, video,'rgb_static'), SIZE, interval, augmentation=random_shift)
-            images, image_paths = load_images(osp.join(VIDEO_ROOT, video,'rgb_gripper'), SIZE, interval, augmentation=random_shift)
+            images, image_paths = load_images(osp.join(VIDEO_ROOT, video, 'rgb_gripper'), SIZE, interval,
+                                              augmentation=random_shift)
             # images, image_paths = load_images(osp.join(VIDEO_ROOT, video,'rgb_gripper'), SIZE, interval, augmentation=random_brightness_enhance)
         elif process_data == 'Calvin_raw':
             images, image_paths = load_images(osp.join(VIDEO_ROOT, video), SIZE, interval)
         elif process_data == 'libero':
             # images, image_paths = load_images(osp.join(VIDEO_ROOT, video, 'images'), SIZE, interval, augmentation=random_shift)
-            images, image_paths = load_images(osp.join(VIDEO_ROOT, video,'gripper_images'), SIZE, interval, augmentation=random_shift)
+            images, image_paths = load_images(osp.join(VIDEO_ROOT, video, 'gripper_images'), SIZE, interval,
+                                              augmentation=random_shift)
         elif process_data == 'Calvin_partial':
-            images, image_paths = load_images(osp.join(VIDEO_ROOT, video,'rgb_static'), SIZE, interval)
+            images, image_paths = load_images(osp.join(VIDEO_ROOT, video, 'rgb_static'), SIZE, interval)
             # images, image_paths = load_images(osp.join(VIDEO_ROOT, video,'rgb_gripper'), SIZE, interval)
         elif process_data == 'taco_play':
             views = ['images', 'grippers']
@@ -453,7 +478,7 @@ if __name__ == "__main__":
                     print(f"Skipping video {video} view {view} as it has already been processed.")
                     continue
 
-                image_level_enc_dec(images, model, processor, processed_codes_path, recon_images_path) 
+                image_level_enc_dec(images, model, processor, processed_codes_path, recon_images_path)
         elif process_data == 'berkeley_autolab_ur5':
             views = ['images', 'gripper']
             for view in views:
@@ -466,7 +491,7 @@ if __name__ == "__main__":
                     print(f"Skipping video {video} view {view} as it has already been processed.")
                     continue
 
-                image_level_enc_dec(images, model, processor, processed_codes_path, recon_images_path)  
+                image_level_enc_dec(images, model, processor, processed_codes_path, recon_images_path)
         elif process_data == 'bridge_orig':
             views = ['images', 'images1']
             for view in views:
@@ -479,7 +504,7 @@ if __name__ == "__main__":
                     print(f"Skipping video {video} view {view} as it has already been processed.")
                     continue
 
-                image_level_enc_dec(images, model, processor, processed_codes_path, recon_images_path)   
+                image_level_enc_dec(images, model, processor, processed_codes_path, recon_images_path)
         elif process_data == 'aloha':
             views = ['cam_high', 'cam_left_wrist', 'cam_right_wrist']
             for view in views:
@@ -509,17 +534,17 @@ if __name__ == "__main__":
                 image_level_enc_dec(images, model, processor, processed_codes_path, recon_images_path)
         else:
             raise ValueError(f"Invalid process_data: {process_data}")
-        
+
         if process_data not in multi_view_datasets:
             # Enumerate all images in the folder
-            processed_codes_path = osp.join(VIDEO_CODES_SAVE, video) 
+            processed_codes_path = osp.join(VIDEO_CODES_SAVE, video)
             recon_images_path = osp.join(VIDEO_RECON_SAVE, video)
-            
+
             if os.path.exists(processed_codes_path):
                 print(f"Skipping video {video} as it has already been processed.")
                 continue
             # Clip-level encoding and decoding
             # clip_level_enc_dec(images_enumerated, model, processor, processed_codes_path, recon_images_path)
-            
+
             # Image-level encoding and decoding for all enumerated images
             image_level_enc_dec(images, model, processor, processed_codes_path, recon_images_path)
