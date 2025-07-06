@@ -395,7 +395,7 @@ def get_data_config(process_data):
 if __name__ == "__main__":
 
     MODEL_HUB = "BAAI/Emu3-VisionTokenizer"
-    path = "/share/project/yuqi.wang/UniVLA/pretrain/Emu3-VisionVQ"
+    path = "/home/ota/workspace/airoa/UniVLA/reference/Emu3-VisionTokenizer"
 
     # choose the dataset to process
     process_data = 'libero'
@@ -409,11 +409,7 @@ if __name__ == "__main__":
 
     assert process_data in simulator_list + oxe_list + video_list + aloha_list, f"Invalid process_data: {process_data}"
 
-    try:
-        model = AutoModel.from_pretrained(path, trust_remote_code=True).eval().cuda()
-    except OSError as e:
-        print(str(e))
-        model = None
+    model = AutoModel.from_pretrained(path, trust_remote_code=True).eval().cuda()
     processor = AutoImageProcessor.from_pretrained(MODEL_HUB, trust_remote_code=True)
 
     # Retrieve configuration for the selected dataset
