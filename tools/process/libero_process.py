@@ -3,12 +3,17 @@ import numpy as np
 from PIL import Image
 import os
 from tqdm import tqdm
+from socket import gethostname
 
 # import tensorflow as tf
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
-data_dir_original = "/media/ota/A292603492600F5B/data/airoa/modified_libero_rlds"
-data_dir_processed = "/media/ota/A292603492600F5B/data/airoa/processed_data/libero_all"
+if gethostname().startswith('aic'):
+    data_dir_original = "/home/user_00005_25b505/shared-storage/group_3/shared/datasets/libero/modified_libero_rlds"
+    data_dir_processed = "/home/user_00005_25b505/shared-storage/group_3/shared/datasets/libero/processed_data/libero_all"
+else:
+    data_dir_original = "/media/ota/A292603492600F5B/data/airoa/modified_libero_rlds"
+    data_dir_processed = "/media/ota/A292603492600F5B/data/airoa/processed_data/libero_all"
 
 # Load the dataset, specify the data directory
 for sub_dataname in ['libero_10_no_noops', 'libero_goal_no_noops', 'libero_object_no_noops', 'libero_spatial_no_noops']:

@@ -1,5 +1,6 @@
 import os
 import os.path as osp
+from socket import gethostname
 import torch
 from transformers import AutoModel, AutoImageProcessor
 import numpy as np
@@ -164,7 +165,12 @@ def image_level_enc(images, image_paths, model, processor, save_codes_path, batc
             print(f"Error processing batch starting at image {start_idx}: {e}")
 
 
-data_dir_processed = "/media/ota/A292603492600F5B/data/airoa/processed_data"
+if gethostname().startswith('aic'):
+    data_dir_original = "/home/user_00005_25b505/shared-storage/group_3/shared/datasets/libero/modified_libero_rlds"
+    data_dir_processed = "/home/user_00005_25b505/shared-storage/group_3/shared/datasets/libero/processed_data/libero_all"
+else:
+    data_dir_original = "/media/ota/A292603492600F5B/data/airoa/modified_libero_rlds"
+    data_dir_processed = "/media/ota/A292603492600F5B/data/airoa/processed_data/libero_all"
 
 data_config = {
     'DROID': {
@@ -395,7 +401,10 @@ def get_data_config(process_data):
 if __name__ == "__main__":
 
     MODEL_HUB = "BAAI/Emu3-VisionTokenizer"
-    path = "/home/ota/workspace/airoa/UniVLA/reference/Emu3-VisionTokenizer"
+    if gethostname().startswith('aic'):
+        path = "/home/user_00005_25b505/shared-storage/group_3/members/user_00005_25b505/workspace/UniVLA/reference/Emu3-VisionTokenizer"
+    else:
+        path = "/home/ota/workspace/airoa/UniVLA/reference/Emu3-VisionTokenizer"
 
     # choose the dataset to process
     process_data = 'libero'
