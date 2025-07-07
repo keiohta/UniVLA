@@ -4,8 +4,8 @@ MASTER_ADDR=${MASTER_ADDR:-127.0.0.1}
 MASTER_PORT=${MASTER_PORT:-23456}
 NGPUS=8
 
-DATAPATH='/share/project/yuqi.wang/datasets/processed_data/meta/libero_all_norm_aug.pkl'
-ACTION_TOKENIZER_PATH="/share/project/yuqi.wang/UniVLA/pretrain/fast"
+DATAPATH='/home/user_00005_25b505/shared-storage/group_3/shared/datasets/libero/processed_data/meta/libero_all_norm.pkl'
+ACTION_TOKENIZER_PATH="/home/user_00005_25b505/shared-storage/group_3/members/user_00005_25b505/workspace/UniVLA/reference/fast"
 EXP_NAME="UNIVLA_LIBERO_VIDEO_BS192_8k"
 
 export PYTHONPATH=$(pwd)
