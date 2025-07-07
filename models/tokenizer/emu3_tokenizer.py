@@ -167,7 +167,7 @@ def image_level_enc(images, image_paths, model, processor, save_codes_path, batc
 
 if gethostname().startswith('aic'):
     data_dir_original = "/home/user_00005_25b505/shared-storage/group_3/shared/datasets/libero/modified_libero_rlds"
-    data_dir_processed = "/home/user_00005_25b505/shared-storage/group_3/shared/datasets/libero/processed_data/libero_all"
+    data_dir_processed = "/home/user_00005_25b505/shared-storage/group_3/shared/datasets/libero/processed_data"
 else:
     data_dir_original = "/media/ota/A292603492600F5B/data/airoa/modified_libero_rlds"
     data_dir_processed = "/media/ota/A292603492600F5B/data/airoa/processed_data/libero_all"
@@ -254,7 +254,7 @@ data_config = {
         'interval': 1,
         'SIZE': (200, 200),
         'VIDEO_ROOT': f'{data_dir_processed}/libero_all',
-        'VIDEO_CODES_SAVE': f'{data_dir_processed}/libero_all_gripper_codes_200_augshift',
+        'VIDEO_CODES_SAVE': f'{data_dir_processed}/libero_all_codes_200',
         'VIDEO_RECON_SAVE': f'{data_dir_processed}/libero_recon_256'
     },
     'bridge_orig': {
@@ -465,9 +465,9 @@ if __name__ == "__main__":
         elif process_data == 'Calvin_raw':
             images, image_paths = load_images(osp.join(VIDEO_ROOT, video), SIZE, interval)
         elif process_data == 'libero':
-            # images, image_paths = load_images(osp.join(VIDEO_ROOT, video, 'images'), SIZE, interval, augmentation=random_shift)
-            images, image_paths = load_images(osp.join(VIDEO_ROOT, video, 'gripper_images'), SIZE, interval,
-                                              augmentation=random_shift)
+            images, image_paths = load_images(osp.join(VIDEO_ROOT, video, 'images'), SIZE, interval, augmentation=random_shift)
+            # images, image_paths = load_images(osp.join(VIDEO_ROOT, video, 'gripper_images'), SIZE, interval,
+            #                                   augmentation=random_shift)
         elif process_data == 'Calvin_partial':
             images, image_paths = load_images(osp.join(VIDEO_ROOT, video, 'rgb_static'), SIZE, interval)
             # images, image_paths = load_images(osp.join(VIDEO_ROOT, video,'rgb_gripper'), SIZE, interval)
