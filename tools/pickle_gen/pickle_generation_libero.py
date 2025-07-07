@@ -1,6 +1,7 @@
 import os
 import os.path as osp
 import pickle
+import argparse
 from tqdm import tqdm
 import numpy as np
 import sys
@@ -30,6 +31,7 @@ def main(dataset_path, output_path, normalizer_path, output_filename):
     for scene in tqdm(os.listdir(language_dir)):
         instr_file = osp.join(language_dir, scene, "instruction.txt")
         if not osp.exists(instr_file):
+            print(f"{instr_file} does not exist")
             continue
         with open(instr_file, "r") as f:
             text = f.read()
@@ -37,26 +39,31 @@ def main(dataset_path, output_path, normalizer_path, output_filename):
         # Load action sequences
         action_folder = osp.join(language_dir, scene, "actions")
         if not osp.exists(action_folder):
+            print(f"{action_folder} does not exist")
             continue
         action_files = [osp.join(action_folder, file) for file in sorted(os.listdir(action_folder), key=sort_by_int)]
         if len(action_files) < min_frames:
+            print(f"len(action_files={len(action_files)}<min_frame={min_frame}")
             continue
         action = [np.load(a) for a in action_files]
 
         # Load image tokens
         img_dir = osp.join(vq_dir, scene)
         if not osp.exists(img_dir):
+            print(f"{img_dir} does not exist")
             continue
         img_files = [osp.join(img_dir, file) for file in sorted(os.listdir(img_dir), key=sort_by_int)]
 
         # Load gripper image tokens
         gripper_img_dir = osp.join(gripper_vq_dir, scene)
         if not osp.exists(gripper_img_dir):
+            print(f"{gripper_img_dir} does not exist")
             continue
         gripper_img_files = [osp.join(gripper_img_dir, file) for file in sorted(os.listdir(gripper_img_dir), key=sort_by_int)]
 
         # Filter out short clips
         if len(img_files) < min_frames or len(gripper_img_files) < min_frames:
+            print(f"short clips")
             continue
 
         result_file.append({
