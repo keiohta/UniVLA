@@ -9,14 +9,18 @@ ACTION_TOKENIZER_PATH="/home/user_00005_25b505/shared-storage/group_3/members/us
 EXP_NAME="UNIVLA_LIBERO_VIDEO_BS192_8k"
 
 export PYTHONPATH=$(pwd)
+export LD_LIBRARY_PATH=${CUDA_HOME}/lib:${CUDA_HOME}/lib64:${LD_LIBRARY_PATH}
+export CUDA_HOME=$CONDA_PREFIX
+export C_INCLUDE_PATH=$CUDA_HOME/targets/x86_64-linux/include${C_INCLUDE_PATH:+:${C_INCLUDE_PATH}}
+export CPLUS_INCLUDE_PATH=$CUDA_HOME/targets/x86_64-linux/include${CPLUS_INCLUDE_PATH:+:${CPLUS_INCLUDE_PATH}}
 
 torchrun \
     --nproc_per_node=${NGPUS} \
     --nnodes=1 \
     --node_rank=${RANK} \
     train/train_moe.py \
-    --model_name_or_path /share/project/yuqi.wang/UniVLA/logs/ckpts/WORLD_MODEL_POSTTRAIN\
-    --model_config_path /share/project/yuqi.wang/UniVLA/configs/moe_fast_video.json \
+    --model_name_or_path ./reference/UniVLA/WORLD_MODEL_POSTTRAIN\
+    --model_config_path ./configs/moe_fast_video.json \
     --deepspeed scripts/sft/zero3_offload.json \
     --output_dir "logs/"${EXP_NAME} \
     --learning_rate 8e-5 \
